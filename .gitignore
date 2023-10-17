@@ -3,4 +3,5 @@
 .RData
 .Ruserdata
 # tools -> version control
-
+tidyr_demo.html
+tidyr_demo.qmd
