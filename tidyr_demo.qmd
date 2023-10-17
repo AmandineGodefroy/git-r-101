@@ -13,4 +13,44 @@ library(ggplot2)
 library(dplyr)
 library(tidyr)
 ```
+### Multiple lines on a single graph
+```{r}
+eustock <- as.data.frame(EuStockMarkets)
+eustock <- eustock |> mutate(time = 1:n())
+
+ggplot(eustock, aes(x=time, y = DAX)) +
+  geom_line()
+```
+```{r}
+ggplot(eustock, aes(x=time, y = CAC)) +
+  geom_line()
+```
+
+### Wrong solution
+```{r}
+ggplot(eustock, aes(x=time, y = DAX)) +
+  geom_line() +
+  geom_line(mapping = aes(y=CAC), color="darkgreen")
+```
+Problems :
+- y axis name is wrong
+- colours must be specified mutually
+- we miss an association between colours and name
+
+#### Tidyr based solution
+
+```{r}
+long_eustock <- eustock |> pivot_longer(-time, names_to = "Stock index", values_to = "Values")
+```
+```{r}
+ggplot(long_eustock, aes(x = time, y = Values, group = `Stock index`, color = `Stock index`)) +
+  geom_line()
+```
+
+```{r}
+#| fig.height: 10
+ggplot(long_eustock, aes(x = time, y = Values, group = `Stock index`)) +
+  geom_line() +
+  facet_wrap(~`Stock index`, ncol = 1, scales="free_y")
+```
 
